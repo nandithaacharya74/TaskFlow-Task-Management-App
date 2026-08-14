@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskFlow - Task Management</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="toast"></div>
+
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="brand large"><span>✓</span> TaskFlow</div>
+      <h1 id="authTitle">Welcome back</h1>
+      <p id="authSubtitle">Sign in to manage your tasks.</p>
+
+      <form id="authForm">
+        <div id="nameField" class="field hidden">
+          <label>Name</label>
+          <input id="name" type="text" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input id="email" type="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="password" type="password" placeholder="At least 6 characters" required>
+        </div>
+        <button class="primary full" type="submit" id="authButton">Sign In</button>
+      </form>
+
+      <p class="switch">Don't have an account?
+        <button id="switchAuth" class="link-button">Create one</button>
+      </p>
+      <p id="authMessage" class="message"></p>
+    </div>
+  </section>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand"><span>✓</span> TaskFlow</div>
+      <nav>
+        <button class="nav-item active" data-view="dashboard">⌂ <span>Dashboard</span></button>
+        <button class="nav-item" data-view="tasks">☑ <span>My Tasks</span></button>
+        <button class="nav-item" data-view="create">＋ <span>Create Task</span></button>
+        <button class="nav-item" data-view="profile">♙ <span>Profile</span></button>
+        <button class="nav-item" id="logout">↪ <span>Logout</span></button>
+      </nav>
+      <div class="side-footer">© 2026 TaskFlow<br>All rights reserved.</div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="mobileMenu" class="icon-button">☰</button>
+        <div class="top-actions">
+          <span class="bell">♧ <b id="notificationCount">0</b></span>
+          <span id="userNameTop">User</span>
+          <span class="avatar">N</span>
+        </div>
+      </header>
+
+      <section id="dashboardView" class="view">
+        <div class="hero-row">
+          <div>
+            <h1>Welcome back, <span id="welcomeName">Nanditha</span>! 👋</h1>
+            <p>Here's what's happening with your tasks today.</p>
+          </div>
+          <button class="primary" data-view="create">＋ Create New Task</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><strong id="totalCount">0</strong><span>Total Tasks</span><i>▣</i></div>
+          <div class="stat green"><strong id="completedCount">0</strong><span>Completed</span><i>✓</i></div>
+          <div class="stat yellow"><strong id="progressCount">0</strong><span>In Progress</span><i>◷</i></div>
+          <div class="stat red"><strong id="pendingCount">0</strong><span>Pending</span><i>⌛</i></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Tasks Overview</h2>
+              <div class="filters">
+                <button class="filter active" data-filter="All">All</button>
+                <button class="filter" data-filter="Pending">Pending</button>
+                <button class="filter" data-filter="In Progress">In Progress</button>
+                <button class="filter" data-filter="Completed">Completed</button>
+              </div>
+            </div>
+            <input id="search" class="search" placeholder="Search tasks...">
+          </div>
+          <div id="taskList"></div>
+          <div id="emptyState" class="empty hidden">No tasks found. Create your first task! 🎯</div>
+        </div>
+      </section>
+
+      <section id="createView" class="view hidden">
+        <div class="page-title"><h1>Create New Task</h1><p>Add a task and track its progress.</p></div>
+        <form id="taskForm" class="form-card">
+          <div class="field"><label>Task title</label><input id="taskTitle" required placeholder="e.g. Build authentication"></div>
+          <div class="field"><label>Description</label><textarea id="taskDescription" rows="5" placeholder="Describe the task..."></textarea></div>
+          <div class="two-col">
+            <div class="field"><label>Status</label><select id="taskStatus"><option>Pending</option><option>In Progress</option><option>Completed</option></select></div>
+            <div class="field"><label>Due date</label><input id="taskDueDate" type="date"></div>
+          </div>
+          <div class="form-actions"><button type="button" class="secondary" data-view="dashboard">Cancel</button><button class="primary">Create Task</button></div>
+        </form>
+      </section>
+
+      <section id="tasksView" class="view hidden">
+        <div class="page-title"><h1>My Tasks</h1><p>View and manage every task in one place.</p></div>
+        <div class="panel"><div id="allTaskList"></div></div>
+      </section>
+
+      <section id="profileView" class="view hidden">
+        <div class="page-title"><h1>Profile</h1><p>Your TaskFlow account details.</p></div>
+        <div class="profile-card">
+          <div class="big-avatar" id="profileAvatar">N</div>
+          <h2 id="profileName">User</h2>
+          <p id="profileEmail">email@example.com</p>
+          <div class="profile-note">Your tasks are securely linked to your account.</div>
+        </div>
+      </section>
+
+      <footer>Made with ❤️ by Nanditha</footer>
+    </main>
+  </div>
+
+  <div id="editModal" class="modal hidden">
+    <div class="modal-card">
+      <button class="close" id="closeModal">×</button>
+      <h2>Edit Task</h2>
+      <form id="editForm">
+        <input id="editId" type="hidden">
+        <div class="field"><label>Title</label><input id="editTitle" required></div>
+        <div class="field"><label>Description</label><textarea id="editDescription" rows="4"></textarea></div>
+        <div class="two-col">
+          <div class="field"><label>Status</label><select id="editStatus"><option>Pending</option><option>In Progress</option><option>Completed</option></select></div>
+          <div class="field"><label>Due date</label><input id="editDueDate" type="date"></div>
+        </div>
+        <button class="primary full">Save Changes</button>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
