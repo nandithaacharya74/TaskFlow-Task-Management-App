@@ -110,10 +110,13 @@ app.delete("/api/tasks/:id", auth, async (req, res) => {
   res.json({ message: "Task deleted." });
 });
 
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+app.use((req, res) => {
+  res.status(404).send("Not Found");
+});
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("MongoDB connected successfully");
